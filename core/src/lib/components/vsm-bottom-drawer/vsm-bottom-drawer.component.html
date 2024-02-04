@@ -1,12 +1,3 @@
-<div
-  [@slideAnimation]="drawerState"
-  class="bottom-drawer"
-  (mousedown)="onMouseDown($event)"
->
-  <div
-    class="resize-handle"
-    (mousedown)="onResizeHandleMouseDown($event)"
-  ></div>
-
+<div class="bottom-drawer" [@slideAnimation]="drawerState">
   <ng-content></ng-content>
 </div>

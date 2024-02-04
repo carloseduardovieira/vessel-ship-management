@@ -1,6 +1,11 @@
 <mat-drawer-container class="container" autosize>
   <mat-drawer #drawer class="container__sidenav-sidebar" mode="side">
-    <p>Auto-resizing sidenav</p>
+    <vsm-list
+      (itemClicked)="($event)"
+      [itemList]="vesselList$"
+      bindId="route_id"
+      bindLabel="route_id"
+    ></vsm-list>
   </mat-drawer>
 
   <mat-drawer-content class="container__sidenav-content">
