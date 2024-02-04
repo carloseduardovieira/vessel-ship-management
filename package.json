@@ -20,6 +20,7 @@
     "@angular/platform-browser-dynamic": "~17.1.0",
     "@angular/router": "~17.1.0",
     "@nx/angular": "18.0.0",
+    "chart.js": "^4.4.1",
     "mapbox-gl": "^3.1.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
