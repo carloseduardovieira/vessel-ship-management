@@ -1,0 +1,10 @@
+<mat-selection-list multiple="false" role="list">
+  @for(item of vesselRouteList$ | async; track item.route_id ){
+  <mat-list-option
+    [value]="item"
+    role="listitem"
+    (click)="itemClicked.next(item)"
+    >{{ item.from_port + ' X ' + item.to_port }}
+  </mat-list-option>
+  }
+</mat-selection-list>

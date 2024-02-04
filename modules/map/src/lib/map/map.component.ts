@@ -1,39 +1,36 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
-import {
-  VsmBottomDrawerComponent,
-  VsmListComponent,
-} from '@vessel-ship-management/core';
-import { Observable } from 'rxjs';
+import { VsmBottomDrawerComponent } from '@vessel-ship-management/core';
+import { Subject } from 'rxjs';
 import { VesselRoute } from './models/vessel-route.model';
-import { VesselsService } from './data-access/vessels.service';
+
+//UI COMPONENTS
+import { VesselsRouteMapComponent } from './ui/vessels-route-map/vessels-route-map.component';
+import { VesselRouteListComponent } from './ui/vessel-route-list/vessel-route-list.component';
+import { VesselRouteSpeedChartComponent } from './ui/vessel-route-speed-chart/vessel-route-speed-chart.component';
 
 @Component({
-  selector: 'vessel-ship-management-map',
+  selector: 'vsm-vessel-ship-management-map',
   standalone: true,
   imports: [
     CommonModule,
     MatSidenavModule,
     MatButtonModule,
     VsmBottomDrawerComponent,
-    VsmListComponent,
+    VesselRouteListComponent,
+    VesselsRouteMapComponent,
+    VesselRouteSpeedChartComponent,
   ],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
 })
-export class MapComponent implements OnInit {
+export class MapComponent {
   @ViewChild('drawer') matDrawer: MatDrawer | undefined;
   @ViewChild('bottomDrawer') bottomDrawer: VsmBottomDrawerComponent | undefined;
 
-  vesselList$: Observable<VesselRoute[]> | undefined;
-
-  constructor(private vesselsService: VesselsService) {}
-
-  ngOnInit(): void {
-    this.initVesselRouteList();
-  }
+  selectedVesselRoute$: Subject<VesselRoute> = new Subject();
 
   toggleSideNav(): void {
     this.matDrawer?.toggle();
@@ -41,10 +38,6 @@ export class MapComponent implements OnInit {
   }
 
   onItemClicked(vesselRoute: VesselRoute): void {
-    // TODO CALL MAP
-  }
-
-  private initVesselRouteList(): void {
-    this.vesselList$ = this.vesselsService.getVesselRouteList();
+    this.selectedVesselRoute$.next(vesselRoute);
   }
 }

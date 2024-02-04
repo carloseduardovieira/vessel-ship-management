@@ -12,5 +12,11 @@
     height: inherit;
     justify-content: center;
     overflow: hidden;
+
+    &--float-button {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+    }
   }
 }

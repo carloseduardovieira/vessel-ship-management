@@ -1,20 +1,28 @@
 <mat-drawer-container class="container" autosize>
   <mat-drawer #drawer class="container__sidenav-sidebar" mode="side">
-    <vsm-list
-      (itemClicked)="($event)"
-      [itemList]="vesselList$"
-      bindId="route_id"
-      bindLabel="route_id"
-    ></vsm-list>
+    <vsm-vessel-route-list
+      (itemClicked)="onItemClicked($event)"
+    ></vsm-vessel-route-list>
   </mat-drawer>
 
   <mat-drawer-content class="container__sidenav-content">
-    <button type="button" mat-button (click)="toggleSideNav()">
+    <button
+      class="container__sidenav-content--float-button"
+      type="button"
+      mat-button
+      (click)="toggleSideNav()"
+    >
       Toggle sidenav
     </button>
 
+    <vsm-vessels-route-map
+      [currentVesselRoute$]="selectedVesselRoute$"
+    ></vsm-vessels-route-map>
+
     <vsm-bottom-drawer #bottomDrawer>
-      <div content>CONTENT AA</div>
+      <vsm-vessel-route-speed-chart
+        [currentVesselRoute$]="selectedVesselRoute$"
+      ></vsm-vessel-route-speed-chart>
     </vsm-bottom-drawer>
   </mat-drawer-content>
 </mat-drawer-container>
