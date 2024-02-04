@@ -1,0 +1,15 @@
+<mat-drawer-container class="container" autosize>
+  <mat-drawer #drawer class="container__sidenav-sidebar" mode="side">
+    <p>Auto-resizing sidenav</p>
+  </mat-drawer>
+
+  <mat-drawer-content class="container__sidenav-content">
+    <button type="button" mat-button (click)="toggleSideNav()">
+      Toggle sidenav
+    </button>
+
+    <vsm-bottom-drawer #bottomDrawer>
+      <div content>CONTENT AA</div>
+    </vsm-bottom-drawer>
+  </mat-drawer-content>
+</mat-drawer-container>

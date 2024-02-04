@@ -1,0 +1,16 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+
+  &__sidenav-sidebar {
+    padding: 20px;
+  }
+
+  &__sidenav-content {
+    align-items: center;
+    display: flex;
+    height: inherit;
+    justify-content: center;
+    overflow: hidden;
+  }
+}

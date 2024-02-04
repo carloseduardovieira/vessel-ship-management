@@ -1,0 +1,10 @@
+<mat-selection-list multiple="false" role="list">
+  @for(item of itemList | async; track item[bindId] ){
+  <mat-list-option
+    [value]="item"
+    role="listitem"
+    (click)="itemClicked.next(item)"
+    >{{ item[bindLabel] }}
+  </mat-list-option>
+  }
+</mat-selection-list>
