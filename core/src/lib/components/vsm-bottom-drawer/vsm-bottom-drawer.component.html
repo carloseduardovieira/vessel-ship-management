@@ -1,3 +1,8 @@
-<div class="bottom-drawer" [@slideAnimation]="drawerState">
+<div
+  [style.visibility]="drawerState === 'closed' ? 'hidden' : 'visible'"
+  [style.height.px]="minHeight"
+  class="bottom-drawer"
+  [@slideAnimation]="drawerState"
+>
   <ng-content></ng-content>
 </div>

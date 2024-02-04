@@ -9,6 +9,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Input,
 } from '@angular/core';
 
 @Component({
@@ -37,7 +38,10 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VsmBottomDrawerComponent {
+  @Input() minHeight = 200;
+
   drawerState: 'open' | 'closed' = 'closed';
+
   constructor(private cd: ChangeDetectorRef) {}
 
   toggleDrawer() {

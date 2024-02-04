@@ -34,10 +34,12 @@ export class MapComponent {
 
   toggleSideNav(): void {
     this.matDrawer?.toggle();
-    this.bottomDrawer?.toggleDrawer();
   }
 
   onItemClicked(vesselRoute: VesselRoute): void {
     this.selectedVesselRoute$.next(vesselRoute);
+    if (this.bottomDrawer?.drawerState === 'closed') {
+      this.bottomDrawer?.toggleDrawer();
+    }
   }
 }
