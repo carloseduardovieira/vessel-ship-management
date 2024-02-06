@@ -1,9 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
-import { VsmBottomDrawerComponent } from '@vessel-ship-management/core';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { Subject } from 'rxjs';
+import { VsmBottomDrawerComponent } from '@vessel-ship-management/core';
 import { VesselRoute } from './models/vessel-route.model';
 
 //UI COMPONENTS
@@ -27,14 +27,9 @@ import { VesselRouteSpeedChartComponent } from './ui/vessel-route-speed-chart/ve
   styleUrl: './map.component.scss',
 })
 export class MapComponent {
-  @ViewChild('drawer') matDrawer: MatDrawer | undefined;
   @ViewChild('bottomDrawer') bottomDrawer: VsmBottomDrawerComponent | undefined;
 
   selectedVesselRoute$: Subject<VesselRoute> = new Subject();
-
-  toggleSideNav(): void {
-    this.matDrawer?.toggle();
-  }
 
   onItemClicked(vesselRoute: VesselRoute): void {
     this.selectedVesselRoute$.next(vesselRoute);

@@ -1,22 +1,8 @@
 .container {
-  width: 100vw;
-  height: 100vh;
-
-  &__sidenav-sidebar {
-    padding: 20px;
-  }
+  width: 100%;
+  height: 100%;
 
   &__sidenav-content {
-    align-items: center;
-    display: flex;
-    height: inherit;
-    justify-content: center;
-    overflow: hidden;
-
-    &--float-button {
-      position: absolute;
-      top: 2rem;
-      left: 2rem;
-    }
+    overflow-y: hidden;
   }
 }

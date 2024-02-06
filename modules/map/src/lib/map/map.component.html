@@ -1,16 +1,19 @@
-<mat-drawer-container class="container" autosize>
-  <mat-drawer #drawer class="container__sidenav-sidebar" mode="side">
+<mat-sidenav-container class="container">
+  <mat-sidenav #sidenav mode="side">
+    <button mat-button (click)="sidenav.toggle()">Toggle</button>
+
     <vsm-vessel-route-list
       (itemClicked)="onItemClicked($event)"
     ></vsm-vessel-route-list>
-  </mat-drawer>
+  </mat-sidenav>
 
-  <mat-drawer-content class="container__sidenav-content">
+  <mat-sidenav-content class="container__sidenav-content">
     <button
+      *ngIf="!sidenav.opened"
       class="container__sidenav-content--float-button"
       type="button"
       mat-button
-      (click)="toggleSideNav()"
+      (click)="sidenav.toggle()"
     >
       Toggle sidenav
     </button>
@@ -24,5 +27,5 @@
         [currentVesselRoute$]="selectedVesselRoute$"
       ></vsm-vessel-route-speed-chart>
     </vsm-bottom-drawer>
-  </mat-drawer-content>
-</mat-drawer-container>
+  </mat-sidenav-content>
+</mat-sidenav-container>
