@@ -30,7 +30,7 @@ interface ChartData {
   styles: [
     `
       .chart-canvas-container {
-        height: 100%;
+        height: 90%;
         width: 100%;
         overflow-x: auto;
         overflow-y: hidden;
@@ -38,7 +38,6 @@ interface ChartData {
 
       .chart-canvas-block {
         height: 100%;
-        max-width: 30000px;
         position: relative;
       }
     `,
