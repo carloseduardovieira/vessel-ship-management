@@ -15,8 +15,25 @@ import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'vsm-vessels-route-map',
-  templateUrl: './vessels-route-map.component.html',
-  styleUrls: ['./vessels-route-map.component.scss'],
+  template: `
+    <div class="map-container">
+      <div id="map" class="map-container__mapbox"></div>
+    </div>
+  `,
+  styles: [
+    `
+      .map-container {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+
+        &__mapbox {
+          height: inherit;
+          width: inherit;
+        }
+      }
+    `,
+  ],
   imports: [],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,13 +58,13 @@ export class VesselsRouteMapComponent
   }
 
   ngAfterViewInit(): void {
-    // this.map = new mapboxgl.Map({
-    //   accessToken: environment.mboxKey,
-    //   container: 'map',
-    //   style: this.style,
-    //   zoom: 1,
-    //   center: [this.lng, this.lat],
-    // });
+    this.map = new mapboxgl.Map({
+      accessToken: environment.mboxKey,
+      container: 'map',
+      style: this.style,
+      zoom: 1,
+      center: [this.lng, this.lat],
+    });
   }
 
   private watchVesselRouteSelectionChanges(): void {
