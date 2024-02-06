@@ -1,8 +1,10 @@
 <div
+  vsmResizableVertical
   [style.visibility]="drawerState === 'closed' ? 'hidden' : 'visible'"
   [style.height.px]="minHeight"
   class="bottom-drawer"
   [@slideAnimation]="drawerState"
 >
+  <div class="bottom-drawer__target-area resize-handle"></div>
   <ng-content></ng-content>
 </div>

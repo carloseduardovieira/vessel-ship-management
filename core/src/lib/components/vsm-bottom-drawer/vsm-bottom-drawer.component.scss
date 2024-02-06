@@ -2,10 +2,14 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%;
   background-color: #fff;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   padding: 16px;
   transition: transform 0.4s ease-in-out;
   overflow: hidden;
+
+  &__target-area {
+    height: 30px;
+    background-color: aquamarine;
+  }
 }
