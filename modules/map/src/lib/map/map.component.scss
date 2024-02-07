@@ -4,5 +4,18 @@
 
   &__sidenav-content {
     overflow: hidden;
+
+    &--float-button {
+      left: 5vh;
+      position: absolute;
+      top: 5vh;
+    }
   }
+}
+
+.sidenav__toolbar {
+  background-color: #238ccb;
+  color: #fff;
+  display: flex;
+  justify-content: end;
 }

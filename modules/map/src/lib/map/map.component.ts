@@ -10,6 +10,8 @@ import { VesselRoute } from './models/vessel-route.model';
 import { VesselsRouteMapComponent } from './ui/vessels-route-map/vessels-route-map.component';
 import { VesselRouteListComponent } from './ui/vessel-route-list/vessel-route-list.component';
 import { VesselRouteSpeedChartComponent } from './ui/vessel-route-speed-chart/vessel-route-speed-chart.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'vsm-vessel-ship-management-map',
@@ -22,6 +24,8 @@ import { VesselRouteSpeedChartComponent } from './ui/vessel-route-speed-chart/ve
     VesselRouteListComponent,
     VesselsRouteMapComponent,
     VesselRouteSpeedChartComponent,
+    MatToolbarModule,
+    MatIconModule,
   ],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',

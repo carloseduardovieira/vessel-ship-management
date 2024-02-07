@@ -1,6 +1,15 @@
 <mat-sidenav-container class="container">
   <mat-sidenav #sidenav mode="side">
-    <button mat-button (click)="sidenav.toggle()">Toggle</button>
+    <mat-toolbar class="sidenav__toolbar">
+      Vessel List
+      <button
+        (click)="sidenav.toggle()"
+        mat-icon-button
+        aria-label="Toggle icon"
+      >
+        <mat-icon>arrow_back_ios</mat-icon>
+      </button>
+    </mat-toolbar>
 
     <vsm-vessel-route-list
       (itemClicked)="onItemClicked($event)"
@@ -8,16 +17,17 @@
   </mat-sidenav>
 
   <mat-sidenav-content class="container__sidenav-content">
+    @if (!sidenav.opened) {
     <button
-      *ngIf="!sidenav.opened"
-      class="container__sidenav-content--float-button"
-      type="button"
-      mat-button
       (click)="sidenav.toggle()"
+      class="container__sidenav-content--float-button"
+      mat-fab
+      color="light"
+      aria-label="menu button"
     >
-      Toggle sidenav
+      <mat-icon>menu</mat-icon>
     </button>
-
+    }
     <vsm-vessels-route-map
       [currentVesselRoute$]="selectedVesselRoute$"
     ></vsm-vessels-route-map>
