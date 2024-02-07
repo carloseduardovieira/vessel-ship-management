@@ -34,6 +34,7 @@ interface ChartData {
         width: 100%;
         overflow-x: auto;
         overflow-y: hidden;
+        scrollbar-color: #238ccb #eeeeee;
       }
 
       .chart-canvas-block {
@@ -83,6 +84,13 @@ export class VesselRouteSpeedChartComponent implements OnInit, OnDestroy {
         options: {
           maintainAspectRatio: false,
           responsive: true,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'start',
+            },
+          },
         },
       });
       return;
