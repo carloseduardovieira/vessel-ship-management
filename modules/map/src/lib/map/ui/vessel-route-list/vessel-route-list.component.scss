@@ -1,0 +1,14 @@
+.list {
+  padding: 0;
+
+  &__viewport {
+    height: 90vh;
+    width: 25vw;
+    overflow-x: hidden;
+    scrollbar-color: #238ccb #eeeeee;
+
+    &--item {
+      height: 50px;
+    }
+  }
+}

@@ -1,10 +1,15 @@
-<mat-selection-list multiple="false" role="list">
-  @for(item of vesselRouteList$ | async; track item.route_id ){
-  <mat-list-option
-    [value]="item"
-    role="listitem"
-    (click)="itemClicked.next(item)"
-    >{{ item.from_port + ' X ' + item.to_port }}
-  </mat-list-option>
-  }
+<mat-selection-list multiple="false" role="list" class="list">
+  <cdk-virtual-scroll-viewport itemSize="50" class="list__viewport">
+    <div
+      *cdkVirtualFor="let item of vesselRouteList$ | async"
+      class="list__viewport--item"
+    >
+      <mat-list-option
+        [value]="item"
+        role="listitem"
+        (click)="itemClicked.next(item)"
+        >{{ item.from_port + ' X ' + item.to_port }}
+      </mat-list-option>
+    </div>
+  </cdk-virtual-scroll-viewport>
 </mat-selection-list>
