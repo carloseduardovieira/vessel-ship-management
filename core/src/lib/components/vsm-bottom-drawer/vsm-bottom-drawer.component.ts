@@ -12,11 +12,13 @@ import {
   Input,
 } from '@angular/core';
 import { ResizableVerticalDirective } from '../../directives';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'vsm-bottom-drawer',
   standalone: true,
-  imports: [ResizableVerticalDirective],
+  imports: [ResizableVerticalDirective, MatIconModule, MatButtonModule],
   templateUrl: './vsm-bottom-drawer.component.html',
   styleUrl: './vsm-bottom-drawer.component.scss',
   animations: [

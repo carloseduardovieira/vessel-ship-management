@@ -11,8 +11,21 @@
   max-width: 98%;
 
   &__target-area {
-    height: 30px;
+    align-items: center;
     background-color: #238ccb;
+    border: 1px solid;
+    color: #fff;
     cursor: grab;
+    display: flex;
+    height: 30px;
+    justify-content: center;
   }
+}
+
+.button--close {
+  position: absolute;
+  background: #238ccb;
+  color: #fff;
+  right: 35px;
+  top: 10px;
 }
