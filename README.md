@@ -1,6 +1,8 @@
 # Vessel Ship Management
 
-![Vessel Ship Management](image_url_here)
+<p align="center">
+    <img src="./readme-assets/app-demo.gif" alt="app-demo-image"/>
+</p>
 
 ## Summary
 
