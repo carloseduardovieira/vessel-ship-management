@@ -5,7 +5,7 @@ export function stringOrNumberValidator(
 ): ValidationErrors | null {
   const value = control.value;
 
-  if (value !== null && value !== undefined) {
+  if (value != null) {
     const regex = /^[a-zA-Z0-9\s]+$/;
     return !value || regex.test(value) ? null : { stringOrNumber: true };
   }
