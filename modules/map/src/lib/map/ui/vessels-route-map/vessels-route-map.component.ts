@@ -121,21 +121,19 @@ export class VesselsRouteMapComponent
       });
     }
 
-    this.flyToInitialVesselPosition(coordinates[0]);
+    this.flyToInitialVesselPosition(coordinates);
   }
 
-  private flyToInitialVesselPosition(position: [number, number]): void {
+  private flyToInitialVesselPosition(positions: [number, number][]): void {
     if (!this.map) {
       return;
     }
 
-    this.map.flyTo({
-      center: position,
-      zoom: 6,
-      pitch: 0,
-      bearing: 0,
-      duration: 5000,
-      essential: true,
+    const bounds = new mapboxgl.LngLatBounds();
+    positions.forEach(function (coord) {
+      bounds.extend(coord);
     });
+
+    this.map.fitBounds(bounds, { padding: 50 });
   }
 }
