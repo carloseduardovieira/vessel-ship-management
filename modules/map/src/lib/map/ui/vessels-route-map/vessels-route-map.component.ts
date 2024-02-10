@@ -48,6 +48,7 @@ export class VesselsRouteMapComponent
   private lat = -0.3063185;
   private lng = 9.1887756;
   private subscriptions = new Subscription();
+  private maxLowSpeed = 1;
 
   ngOnInit(): void {
     this.watchVesselRouteSelectionChanges();
@@ -116,7 +117,7 @@ export class VesselsRouteMapComponent
         type: 'Feature',
         properties: {
           color:
-            coordinates[0][VesselObservation.SPEED] > 0.9
+            coordinates[0][VesselObservation.SPEED] > this.maxLowSpeed
               ? '#508D69'
               : '#FA7070',
         },
@@ -127,9 +128,41 @@ export class VesselsRouteMapComponent
       });
     });
 
-    if (this.map && !this.map.getLayer('lines')) {
+    this.createMapLayer('lines', features);
+  }
+
+  private createConnectionLineLayer(coordinates: VesselObservation[][]): void {
+    if (!this.map) {
+      return;
+    }
+
+    const features: GeoJSON.Feature<GeoJSON.Geometry>[] = [
+      {
+        type: 'Feature',
+        properties: {
+          color: '#FA7070',
+        },
+        geometry: {
+          type: 'LineString',
+          coordinates: coordinates,
+        },
+      },
+    ];
+
+    this.createMapLayer('connectionLine', features);
+  }
+
+  private createMapLayer(
+    layerId: string,
+    features: GeoJSON.Feature<GeoJSON.Geometry>[]
+  ): void {
+    if (!this.map) {
+      return;
+    }
+
+    if (!this.map.getLayer(layerId)) {
       this.map.addLayer({
-        id: 'lines',
+        id: layerId,
         type: 'line',
         source: {
           type: 'geojson',
@@ -148,55 +181,10 @@ export class VesselsRouteMapComponent
         },
       });
     } else {
-      (this.map.getSource('lines') as mapboxgl.GeoJSONSource).setData({
+      (this.map.getSource(layerId) as mapboxgl.GeoJSONSource).setData({
         type: 'FeatureCollection',
         features,
       });
-    }
-  }
-
-  private createConnectionLineLayer(coordinates: VesselObservation[][]): void {
-    if (!this.map) {
-      return;
-    }
-
-    const geojsonData = {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates: coordinates,
-      },
-    };
-
-    if (this.map && !this.map.getLayer('connectionLine')) {
-      this.map.addLayer({
-        id: 'connectionLine',
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-              type: 'LineString',
-              coordinates: coordinates,
-            },
-          },
-        },
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round',
-        },
-        paint: {
-          'line-color': '#FA7070',
-          'line-width': 8,
-        },
-      });
-    } else {
-      (this.map.getSource('connectionLine') as mapboxgl.GeoJSONSource).setData(
-        geojsonData as GeoJSON.Feature<GeoJSON.Geometry>
-      );
     }
   }
 
@@ -210,37 +198,37 @@ export class VesselsRouteMapComponent
     coordinates: VesselObservation[][]
   ): VesselObservation[][][] {
     const subCoordinates: VesselObservation[][][] = [];
-    const lowSpeed = 1;
-    const highSpeed = 1.1;
-    let currentSubCoordinate = [];
+    let currentSubCoordinate: VesselObservation[][] = [];
 
-    const pushSubCoordinate = (currentSubCoordinate: VesselObservation[][]) => {
+    const pushSubCoordinate = () => {
       subCoordinates.push(currentSubCoordinate);
+      currentSubCoordinate = [];
     };
 
     for (const item of coordinates) {
-      if (item[VesselObservation.SPEED] < lowSpeed) {
+      const speed = item[VesselObservation.SPEED];
+
+      if (speed <= this.maxLowSpeed) {
         if (
           currentSubCoordinate.length > 0 &&
-          currentSubCoordinate[0][VesselObservation.SPEED] >= highSpeed
+          currentSubCoordinate[0][VesselObservation.SPEED] > this.maxLowSpeed
         ) {
-          pushSubCoordinate(currentSubCoordinate);
-          currentSubCoordinate = [];
+          pushSubCoordinate();
         }
-      } else if (item[VesselObservation.SPEED] >= highSpeed) {
+      } else if (speed > this.maxLowSpeed) {
         if (
           currentSubCoordinate.length > 0 &&
-          currentSubCoordinate[0][VesselObservation.SPEED] < highSpeed
+          currentSubCoordinate[0][VesselObservation.SPEED] <= this.maxLowSpeed
         ) {
-          pushSubCoordinate(currentSubCoordinate);
-          currentSubCoordinate = [];
+          pushSubCoordinate();
         }
       }
+
       currentSubCoordinate.push(item);
     }
 
     if (currentSubCoordinate.length > 0) {
-      pushSubCoordinate(currentSubCoordinate);
+      pushSubCoordinate();
     }
 
     return subCoordinates;
