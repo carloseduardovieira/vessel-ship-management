@@ -1,1 +1,1 @@
-export * from './ms-to-hour.pipe';
+export * from './ms-to-duration.pipe';
