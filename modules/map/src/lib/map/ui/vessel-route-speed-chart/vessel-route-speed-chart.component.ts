@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { Observable, Subscription, map } from 'rxjs';
 import { VesselRoute } from '../../models/vessel-route.model';
-import { Chart } from 'chart.js/auto';
+import { Chart, ScriptableLineSegmentContext } from 'chart.js/auto';
 import { VesselObservation } from '../../enums/vessel-observation.enum';
 import { CommonModule } from '@angular/common';
 import { DateUtils } from '@vessel-ship-management/core';
@@ -54,6 +54,7 @@ export class VesselRouteSpeedChartComponent implements OnInit, OnDestroy {
   chartDataCount = 0;
 
   private subscriptions = new Subscription();
+  private maxLowSpeed = 1;
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -69,6 +70,13 @@ export class VesselRouteSpeedChartComponent implements OnInit, OnDestroy {
     const chartLabels = data.chartLabels;
     const chartDatasetsData = data.chartData;
 
+    const changeColorAccordingToSpeed = (
+      ctx: ScriptableLineSegmentContext,
+      value: string
+    ) => {
+      return ctx.p1.parsed.y < this.maxLowSpeed ? value : '#508D69';
+    };
+
     if (!this.chart) {
       this.chart = new Chart('speedChart', {
         type: 'line',
@@ -78,6 +86,18 @@ export class VesselRouteSpeedChartComponent implements OnInit, OnDestroy {
             {
               label: 'Speed Changes Over Time (Knots)',
               data: chartDatasetsData,
+              borderColor: '#508D69',
+              backgroundColor: '#508D69',
+              segment: {
+                borderColor: (context) => {
+                  return changeColorAccordingToSpeed(context, '#FA7070');
+                },
+                backgroundColor: (context) => {
+                  return changeColorAccordingToSpeed(context, '#FA7070');
+                },
+              },
+              fill: true,
+              pointRadius: 0,
             },
           ],
         },
