@@ -37,9 +37,14 @@ export class MapComponent {
 
   selectedVesselRoute$: Subject<VesselRoute> = new Subject();
 
+  private selectedRoute: VesselRoute | undefined;
+
   onItemClicked(vesselRoute: VesselRoute): void {
-    vesselRoute.points = this.sortObservationPoints(vesselRoute.points);
-    this.selectedVesselRoute$.next(vesselRoute);
+    if (this.selectedRoute?.route_id !== vesselRoute?.route_id) {
+      vesselRoute.points = this.sortObservationPoints(vesselRoute.points);
+      this.selectedVesselRoute$.next(vesselRoute);
+    }
+
     if (this.bottomDrawer?.drawerState === 'closed') {
       this.bottomDrawer?.toggleDrawer();
     }
