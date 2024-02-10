@@ -80,39 +80,14 @@ export class VesselsRouteMapComponent
       return;
     }
 
-    vesselRoute.points = this.sortObservationPoints(vesselRoute.points);
-
     const coordinates: [number, number][] = vesselRoute.points.map((point) => [
       point[VesselObservation.LATITUDE],
       point[VesselObservation.LONGITUDE],
     ]);
 
+    this.createConnectionLineLayer(coordinates);
     this.createMapDataSource(vesselRoute.points);
     this.flyToInitialVesselPosition(coordinates);
-  }
-
-  private createMapLayer(index: number, color = 'red'): void {
-    if (!this.map) {
-      return;
-    }
-
-    console.log('color', color);
-
-    // if (this.map && !this.map.getLayer('route')) {
-    this.map.addLayer({
-      id: 'route' + index,
-      type: 'line',
-      source: 'route' + index,
-      paint: {
-        'line-color': color,
-        'line-width': 8,
-      },
-      layout: {
-        'line-join': 'round',
-        'line-cap': 'round',
-      },
-    });
-    // }
   }
 
   private flyToInitialVesselPosition(positions: [number, number][]): void {
@@ -121,37 +96,11 @@ export class VesselsRouteMapComponent
     }
 
     const bounds = new mapboxgl.LngLatBounds();
-    positions.forEach(function (coord) {
+    positions.forEach((coord) => {
       bounds.extend(coord);
     });
 
     this.map.fitBounds(bounds, { padding: 50 });
-  }
-
-  private createDataSource(
-    index: number,
-    coordinates: [VesselObservation[][]]
-  ): void {
-    if (!this.map) {
-      return;
-    }
-
-    const dataSource: any = {
-      type: 'geojson',
-      data: {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'LineString',
-          coordinates: coordinates.map((coordinate) => [
-            coordinate[VesselObservation.LATITUDE],
-            coordinate[VesselObservation.LONGITUDE],
-          ]),
-        },
-      },
-    };
-
-    this.map.addSource('route' + index, dataSource);
   }
 
   private createMapDataSource(coordinates: VesselObservation[][]): void {
@@ -159,144 +108,108 @@ export class VesselsRouteMapComponent
       return;
     }
 
-    // Define coordinates for each connection between layers
     const subCoordinates = this.createSubCoordinatesArray(coordinates);
+    const features: GeoJSON.Feature<GeoJSON.Geometry>[] = [];
 
-    // Add line layers to connect the layers
-    // this.map.addLayer({
-    //   id: 'line-layer1',
-    //   type: 'line',
-    //   source: {
-    //     type: 'geojson',
-    //     data: {
-    //       type: 'Feature',
-    //       properties: {},
-    //       geometry: {
-    //         type: 'LineString',
-    //         coordinates: subCoordinates[0],
-    //       },
-    //     },
-    //   },
-    //   layout: {
-    //     'line-join': 'round',
-    //     'line-cap': 'round',
-    //   },
-    //   paint: {
-    //     'line-color': '#888',
-    //     'line-width': 8,
-    //   },
-    // });
+    subCoordinates.forEach((coordinates: VesselObservation[][]) => {
+      features.push({
+        type: 'Feature',
+        properties: {
+          color:
+            coordinates[0][VesselObservation.SPEED] > 0.9
+              ? '#508D69'
+              : '#FA7070',
+        },
+        geometry: {
+          type: 'LineString',
+          coordinates: coordinates,
+        },
+      });
+    });
 
-    // this.map.addLayer({
-    //   id: 'line-layer2',
-    //   type: 'line',
-    //   source: {
-    //     type: 'geojson',
-    //     data: {
-    //       type: 'Feature',
-    //       properties: {},
-    //       geometry: {
-    //         type: 'LineString',
-    //         coordinates: subCoordinates[1],
-    //       },
-    //     },
-    //   },
-    //   layout: {
-    //     'line-join': 'round',
-    //     'line-cap': 'round',
-    //   },
-    //   paint: {
-    //     'line-color': '#888',
-    //     'line-width': 8,
-    //   },
-    // });
-
-    // this.map.addLayer({
-    //   id: 'line-layer3',
-    //   type: 'line',
-    //   source: {
-    //     type: 'geojson',
-    //     data: {
-    //       type: 'Feature',
-    //       properties: {},
-    //       geometry: {
-    //         type: 'LineString',
-    //         coordinates: subCoordinates[2],
-    //       },
-    //     },
-    //   },
-    //   layout: {
-    //     'line-join': 'round',
-    //     'line-cap': 'round',
-    //   },
-    //   paint: {
-    //     'line-color': '#888',
-    //     'line-width': 8,
-    //   },
-    // });
-
-    // console.log(coordinates);
-
-    // console.log(subCoordinates);
-    // subCoordinates.forEach((coordinates: any, index: number) => {
-    //   console.log('coordi', coordinates);
-    //   this.createDataSource(index, coordinates as any);
-    //   this.createMapLayer(
-    //     index,
-    //     coordinates[0][VesselObservation.SPEED] > 0.9 ? '#508D69' : '#FA7070'
-    //   );
-    // });
-
-    // console.log(subarrays);
-    // coordinates.forEach((coordinate: VesselObservation[], i) => {
-    //   // console.log('coordinate', coordinate[VesselObservation.SPEED]);
-    //   // const lineColor =
-    //   //   coordinate[VesselObservation.SPEED] > 0.9 ? '#508D69' : '#FA7070';
-
-    //   dataSource.data.features;
-
-    //   if (coordinate[VesselObservation.SPEED] < 1) {
-    //     console.log('one');
-    //   } else {
-    //     console.log('two');
-    //   }
-
-    //   dataSource.data?.geometry.coordinates.push([
-    //     coordinate[VesselObservation.LATITUDE],
-    //     coordinate[VesselObservation.LONGITUDE],
-    //   ]);
-
-    //   dataSource.data.geometry.layer;
-    //   // dataSource.data.properties.color = 'red';
-    // });
-
-    // console.log('datasource', dataSource);
-
-    // if (!this.map.getSource('route')) {
-
-    // } else {
-    //   (this.map.getSource('route') as mapboxgl.GeoJSONSource).setData(
-    //     dataSource.data as GeoJSON.Feature<GeoJSON.Geometry>
-    //   );
-    // }
+    if (this.map && !this.map.getLayer('lines')) {
+      this.map.addLayer({
+        id: 'lines',
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features,
+          },
+        },
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+        },
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 8,
+        },
+      });
+    } else {
+      (this.map.getSource('lines') as mapboxgl.GeoJSONSource).setData({
+        type: 'FeatureCollection',
+        features,
+      });
+    }
   }
 
-  private sortObservationPoints(
-    points: VesselObservation[][]
-  ): VesselObservation[][] {
-    return points.sort(
-      (a, b) => a[VesselObservation.TIMESTAMP] - b[VesselObservation.TIMESTAMP]
-    );
+  private createConnectionLineLayer(coordinates: VesselObservation[][]): void {
+    if (!this.map) {
+      return;
+    }
+
+    const geojsonData = {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates: coordinates,
+      },
+    };
+
+    if (this.map && !this.map.getLayer('connectionLine')) {
+      this.map.addLayer({
+        id: 'connectionLine',
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'LineString',
+              coordinates: coordinates,
+            },
+          },
+        },
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+        },
+        paint: {
+          'line-color': '#FA7070',
+          'line-width': 8,
+        },
+      });
+    } else {
+      (this.map.getSource('connectionLine') as mapboxgl.GeoJSONSource).setData(
+        geojsonData as GeoJSON.Feature<GeoJSON.Geometry>
+      );
+    }
   }
 
   /**
    * This method ensures that a new sub coordinate array is started if the
    * current subarray contains elements with speed values on opposite sides of 1
    * @param coordinates: VesselObservation[][]
-   * @returns
+   * @returns VesselObservation[][][]
    */
-  private createSubCoordinatesArray(coordinates: VesselObservation[][]) {
-    const subCoordinates: any = [];
+  createSubCoordinatesArray(
+    coordinates: VesselObservation[][]
+  ): VesselObservation[][][] {
+    const subCoordinates: VesselObservation[][][] = [];
     const lowSpeed = 1;
     const highSpeed = 1.1;
     let currentSubCoordinate = [];
