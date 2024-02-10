@@ -48,6 +48,7 @@ export class VesselsRouteMapComponent
   private lat = -0.3063185;
   private lng = 9.1887756;
   private subscriptions = new Subscription();
+  private maxLowSpeed = 1;
 
   ngOnInit(): void {
     this.watchVesselRouteSelectionChanges();
@@ -85,42 +86,8 @@ export class VesselsRouteMapComponent
       point[VesselObservation.LONGITUDE],
     ]);
 
-    const dataSource: mapboxgl.GeoJSONSourceRaw = {
-      type: 'geojson',
-      data: {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'LineString',
-          coordinates,
-        },
-      },
-    };
-
-    if (!this.map.getSource('route')) {
-      this.map.addSource('route', dataSource);
-    } else {
-      (this.map.getSource('route') as mapboxgl.GeoJSONSource).setData(
-        dataSource.data as GeoJSON.Feature<GeoJSON.Geometry>
-      );
-    }
-
-    if (!this.map.getLayer('route')) {
-      this.map.addLayer({
-        id: 'route',
-        type: 'line',
-        source: 'route',
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round',
-        },
-        paint: {
-          'line-color': '#888',
-          'line-width': 8,
-        },
-      });
-    }
-
+    this.createConnectionLineLayer(coordinates);
+    this.createMapDataSource(vesselRoute.points);
     this.flyToInitialVesselPosition(coordinates);
   }
 
@@ -130,10 +97,140 @@ export class VesselsRouteMapComponent
     }
 
     const bounds = new mapboxgl.LngLatBounds();
-    positions.forEach(function (coord) {
+    positions.forEach((coord) => {
       bounds.extend(coord);
     });
 
     this.map.fitBounds(bounds, { padding: 50 });
+  }
+
+  private createMapDataSource(coordinates: VesselObservation[][]): void {
+    if (!this.map) {
+      return;
+    }
+
+    const subCoordinates = this.createSubCoordinatesArray(coordinates);
+    const features: GeoJSON.Feature<GeoJSON.Geometry>[] = [];
+
+    subCoordinates.forEach((coordinates: VesselObservation[][]) => {
+      features.push({
+        type: 'Feature',
+        properties: {
+          color:
+            coordinates[0][VesselObservation.SPEED] > this.maxLowSpeed
+              ? '#508D69'
+              : '#FA7070',
+        },
+        geometry: {
+          type: 'LineString',
+          coordinates: coordinates,
+        },
+      });
+    });
+
+    this.createMapLayer('lines', features);
+  }
+
+  private createConnectionLineLayer(coordinates: VesselObservation[][]): void {
+    if (!this.map) {
+      return;
+    }
+
+    const features: GeoJSON.Feature<GeoJSON.Geometry>[] = [
+      {
+        type: 'Feature',
+        properties: {
+          color: '#FA7070',
+        },
+        geometry: {
+          type: 'LineString',
+          coordinates: coordinates,
+        },
+      },
+    ];
+
+    this.createMapLayer('connectionLine', features);
+  }
+
+  private createMapLayer(
+    layerId: string,
+    features: GeoJSON.Feature<GeoJSON.Geometry>[]
+  ): void {
+    if (!this.map) {
+      return;
+    }
+
+    if (!this.map.getLayer(layerId)) {
+      this.map.addLayer({
+        id: layerId,
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features,
+          },
+        },
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+        },
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 8,
+        },
+      });
+    } else {
+      (this.map.getSource(layerId) as mapboxgl.GeoJSONSource).setData({
+        type: 'FeatureCollection',
+        features,
+      });
+    }
+  }
+
+  /**
+   * This method ensures that a new sub coordinate array is started if the
+   * current subarray contains elements with speed values on opposite sides of 1
+   * @param coordinates: VesselObservation[][]
+   * @returns VesselObservation[][][]
+   */
+  createSubCoordinatesArray(
+    coordinates: VesselObservation[][]
+  ): VesselObservation[][][] {
+    const subCoordinates: VesselObservation[][][] = [];
+    let currentSubCoordinate: VesselObservation[][] = [];
+
+    const pushSubCoordinate = () => {
+      subCoordinates.push(currentSubCoordinate);
+      currentSubCoordinate = [];
+    };
+
+    for (const item of coordinates) {
+      const speed = item[VesselObservation.SPEED];
+
+      if (speed <= this.maxLowSpeed) {
+        if (
+          currentSubCoordinate.length > 0 &&
+          currentSubCoordinate[0][VesselObservation.SPEED] > this.maxLowSpeed
+        ) {
+          pushSubCoordinate();
+        }
+      } else if (speed > this.maxLowSpeed) {
+        if (
+          currentSubCoordinate.length > 0 &&
+          currentSubCoordinate[0][VesselObservation.SPEED] <= this.maxLowSpeed
+        ) {
+          pushSubCoordinate();
+        }
+      }
+
+      currentSubCoordinate.push(item);
+    }
+
+    if (currentSubCoordinate.length > 0) {
+      pushSubCoordinate();
+    }
+
+    return subCoordinates;
   }
 }
