@@ -1,7 +1,7 @@
 # Vessel Ship Management
 
 <p align="center">
-    <img src="./readme-assets/app-demo.gif" alt="app-demo-image"/>
+    <img src="./readme-assets/app-demonstration.gif" alt="app-demo-image"/>
 </p>
 
 ## Summary
