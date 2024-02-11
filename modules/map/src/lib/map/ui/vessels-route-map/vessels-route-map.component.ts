@@ -190,7 +190,7 @@ export class VesselsRouteMapComponent
 
   /**
    * This method ensures that a new sub coordinate array is started if the
-   * current subarray contains elements with speed values on opposite sides of 1
+   * current subarray contains elements with speed values on opposite sides of this.maxLowSpeed
    * @param coordinates: VesselObservation[][]
    * @returns VesselObservation[][][]
    */

@@ -13,12 +13,15 @@
       min-width: 40px;
       padding: 0;
       padding-left: 14px;
+      z-index: 1;
+      position: absolute;
     }
 
     &--button-open {
       left: 5vh;
       position: absolute;
       top: 5vh;
+      z-index: 1;
     }
   }
 }
