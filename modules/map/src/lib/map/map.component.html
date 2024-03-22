@@ -1,7 +1,7 @@
 <mat-sidenav-container class="container">
   <mat-sidenav #sidenav mode="side">
     <vsm-vessel-route-list
-      (itemClicked)="onItemClicked($event)"
+      (itemClicked)="onItemClicked()"
     ></vsm-vessel-route-list>
   </mat-sidenav>
 
@@ -27,14 +27,10 @@
     </button>
     }
 
-    <vsm-vessels-route-map
-      [currentVesselRoute$]="selectedVesselRoute$"
-    ></vsm-vessels-route-map>
+    <vsm-vessels-route-map></vsm-vessels-route-map>
 
     <vsm-bottom-drawer #bottomDrawer>
-      <vsm-vessel-route-speed-chart
-        [currentVesselRoute$]="selectedVesselRoute$"
-      ></vsm-vessel-route-speed-chart>
+      <vsm-vessel-route-speed-chart></vsm-vessel-route-speed-chart>
     </vsm-bottom-drawer>
   </mat-sidenav-content>
 </mat-sidenav-container>

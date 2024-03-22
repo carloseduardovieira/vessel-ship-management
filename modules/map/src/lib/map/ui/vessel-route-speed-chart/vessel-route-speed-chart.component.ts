@@ -1,17 +1,18 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { Observable, Subscription, map } from 'rxjs';
-import { VesselRoute } from '../../models/vessel-route.model';
-import { Chart, ScriptableLineSegmentContext } from 'chart.js/auto';
-import { VesselObservation } from '../../enums/vessel-observation.enum';
-import { CommonModule } from '@angular/common';
 import { DateUtils } from '@vessel-ship-management/core';
+import { Chart, ScriptableLineSegmentContext } from 'chart.js/auto';
+import { map, Subscription } from 'rxjs';
+
+import { VesselObservation } from '../../enums/vessel-observation.enum';
+import { MapControllerService } from '../../map-controller.service';
+import { VesselRoute } from '../../models/vessel-route.model';
 
 interface ChartData {
   chartLabels: string[];
@@ -48,15 +49,16 @@ interface ChartData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VesselRouteSpeedChartComponent implements OnInit, OnDestroy {
-  @Input() currentVesselRoute$: Observable<VesselRoute> | undefined;
-
-  chart: Chart | undefined;
+  chart!: Chart;
   chartDataCount = 0;
 
   private subscriptions = new Subscription();
   private maxLowSpeed = 1;
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(
+    private cd: ChangeDetectorRef,
+    private mapCtrl: MapControllerService
+  ) {}
 
   ngOnInit() {
     this.watchVesselRouteChanges();
@@ -123,19 +125,22 @@ export class VesselRouteSpeedChartComponent implements OnInit, OnDestroy {
 
   private watchVesselRouteChanges(): void {
     this.subscriptions.add(
-      this.currentVesselRoute$
+      this.mapCtrl.currentMapRoute$
         ?.pipe(
-          map((vesselRoute: VesselRoute) => {
-            const chartData = this.initChartData(vesselRoute);
-            this.chartDataCount = chartData.chartData.length;
-            this.cd.markForCheck();
-            return chartData;
+          map((vesselRoute: VesselRoute | undefined) => {
+            if (vesselRoute) {
+              const chartData = this.initChartData(vesselRoute);
+              this.chartDataCount = chartData.chartData.length;
+              this.cd.markForCheck();
+              return chartData;
+            }
+
+            return undefined;
           })
         )
         .subscribe({
-          next: (chartData: ChartData) => {
-            this.createChart(chartData);
-          },
+          next: (chartData: ChartData | undefined) =>
+            chartData && this.createChart(chartData),
         })
     );
   }

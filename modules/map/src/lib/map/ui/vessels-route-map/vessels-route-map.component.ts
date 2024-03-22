@@ -2,16 +2,16 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  Input,
   OnDestroy,
   OnInit,
 } from '@angular/core';
-
-import * as mapboxgl from 'mapbox-gl';
-import { VesselRoute } from '../../models/vessel-route.model';
-import { VesselObservation } from '../../enums/vessel-observation.enum';
 import { environment } from '@vessel-ship-management/core';
-import { Observable, Subscription } from 'rxjs';
+import * as mapboxgl from 'mapbox-gl';
+import { Subscription } from 'rxjs';
+
+import { VesselObservation } from '../../enums/vessel-observation.enum';
+import { MapControllerService } from '../../map-controller.service';
+import { VesselRoute } from '../../models/vessel-route.model';
 
 @Component({
   selector: 'vsm-vessels-route-map',
@@ -41,14 +41,14 @@ import { Observable, Subscription } from 'rxjs';
 export class VesselsRouteMapComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
-  @Input() currentVesselRoute$: Observable<VesselRoute> | undefined;
-
   private map: mapboxgl.Map | undefined;
   private style = 'mapbox://styles/mapbox/streets-v11';
   private lat = -0.3063185;
   private lng = 9.1887756;
   private subscriptions = new Subscription();
   private maxLowSpeed = 1;
+
+  constructor(private mapCtrl: MapControllerService) {}
 
   ngOnInit(): void {
     this.watchVesselRouteSelectionChanges();
@@ -70,8 +70,9 @@ export class VesselsRouteMapComponent
 
   private watchVesselRouteSelectionChanges(): void {
     this.subscriptions.add(
-      this.currentVesselRoute$?.subscribe({
-        next: (vesselRoute: VesselRoute) => this.drawRoute(vesselRoute),
+      this.mapCtrl.currentMapRoute$?.subscribe({
+        next: (vesselRoute: VesselRoute | undefined) =>
+          vesselRoute && this.drawRoute(vesselRoute),
       })
     );
   }

@@ -1,20 +1,17 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { Subject } from 'rxjs';
-import { VesselRoute } from './models/vessel-route.model';
-import { VesselObservation } from './enums/vessel-observation.enum';
-import { MapControllerService } from './map-controller.service';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { VsmBottomDrawerComponent } from '@vessel-ship-management/core';
 
-//UI COMPONENTS
-import { VesselsRouteMapComponent } from './ui/vessels-route-map/vessels-route-map.component';
-import { VesselRouteSpeedChartComponent } from './ui/vessel-route-speed-chart/vessel-route-speed-chart.component';
+import { MapControllerService } from './map-controller.service';
 import { VesselRouteListComponent } from './ui/vessel-route-list/vessel-route-list.component';
+import { VesselRouteSpeedChartComponent } from './ui/vessel-route-speed-chart/vessel-route-speed-chart.component';
+import { VesselsRouteMapComponent } from './ui/vessels-route-map/vessels-route-map.component';
 
+//UI COMPONENTS
 @Component({
   selector: 'vsm-vessel-ship-management-map',
   standalone: true,
@@ -43,26 +40,9 @@ import { VesselRouteListComponent } from './ui/vessel-route-list/vessel-route-li
 export class MapComponent {
   @ViewChild('bottomDrawer') bottomDrawer: VsmBottomDrawerComponent | undefined;
 
-  selectedVesselRoute$: Subject<VesselRoute> = new Subject();
-
-  private selectedRoute: VesselRoute | undefined;
-
-  onItemClicked(vesselRoute: VesselRoute): void {
-    if (this.selectedRoute?.route_id !== vesselRoute?.route_id) {
-      vesselRoute.points = this.sortObservationPoints(vesselRoute.points);
-      this.selectedVesselRoute$.next(vesselRoute);
-    }
-
+  onItemClicked(): void {
     if (this.bottomDrawer?.drawerState === 'closed') {
       this.bottomDrawer?.toggleDrawer();
     }
-  }
-
-  private sortObservationPoints(
-    points: VesselObservation[][]
-  ): VesselObservation[][] {
-    return points.sort(
-      (a, b) => a[VesselObservation.TIMESTAMP] - b[VesselObservation.TIMESTAMP]
-    );
   }
 }

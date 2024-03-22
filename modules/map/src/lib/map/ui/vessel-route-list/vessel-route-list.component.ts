@@ -11,6 +11,7 @@ import {
   VsmListComponent,
 } from '@vessel-ship-management/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MapControllerService } from '../../map-controller.service';
 
 @Component({
   selector: 'vsm-vessel-route-list',
@@ -21,5 +22,12 @@ import { MatIconModule } from '@angular/material/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VesselRouteListComponent {
-  @Output() itemClicked: EventEmitter<VesselRoute> = new EventEmitter();
+  @Output() itemClicked: EventEmitter<void> = new EventEmitter();
+
+  constructor(private mapCtrl: MapControllerService) {}
+
+  hasRouteSelection(route: VesselRoute) {
+    this.mapCtrl.mapRouteChanged(route);
+    this.itemClicked.next();
+  }
 }
